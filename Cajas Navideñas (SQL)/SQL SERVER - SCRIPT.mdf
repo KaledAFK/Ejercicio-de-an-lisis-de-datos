@@ -1,0 +1,694 @@
+/*==============================================================*/
+/* DBMS name:      Microsoft SQL Server 2008                    */
+/* Created on:     15-12-2020 10:29:02                          */
+/*==============================================================*/
+create database CAJAS_NAVIDEÑAS
+use CAJAS_NAVIDEÑAS
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('CIUDAD') and o.name = 'FK_CIUDAD_CIUDADES_REGION')
+alter table CIUDAD
+   drop constraint FK_CIUDAD_CIUDADES_REGION
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('COMUNA') and o.name = 'FK_COMUNA_COMUNAS_CIUDAD')
+alter table COMUNA
+   drop constraint FK_COMUNA_COMUNAS_CIUDAD
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('DETALLE') and o.name = 'FK_DETALLE_DETALLES_FACTURA')
+alter table DETALLE
+   drop constraint FK_DETALLE_DETALLES_FACTURA
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('DETALLE') and o.name = 'FK_DETALLE_PRODUCTOS_CAJA')
+alter table DETALLE
+   drop constraint FK_DETALLE_PRODUCTOS_CAJA
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('EMPLEADO') and o.name = 'FK_EMPLEADO_DESTINATA_SUCURSAL')
+alter table EMPLEADO
+   drop constraint FK_EMPLEADO_DESTINATA_SUCURSAL
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('EMPLEADO') and o.name = 'FK_EMPLEADO_TIENEN_SINDICAT')
+alter table EMPLEADO
+   drop constraint FK_EMPLEADO_TIENEN_SINDICAT
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('EMPLEADO') and o.name = 'FK_EMPLEADO_VIVEN_COMUNA')
+alter table EMPLEADO
+   drop constraint FK_EMPLEADO_VIVEN_COMUNA
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('FACTURA') and o.name = 'FK_FACTURA_PAGAN_SUCURSAL')
+alter table FACTURA
+   drop constraint FK_FACTURA_PAGAN_SUCURSAL
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('MEDIOS_DE_PAGO') and o.name = 'FK_MEDIOS_D_MEDIOS_DE_FACTURA')
+alter table MEDIOS_DE_PAGO
+   drop constraint FK_MEDIOS_D_MEDIOS_DE_FACTURA
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('MEDIOS_DE_PAGO') and o.name = 'FK_MEDIOS_D_MEDIOS_DE_PAGO')
+alter table MEDIOS_DE_PAGO
+   drop constraint FK_MEDIOS_D_MEDIOS_DE_PAGO
+go
+
+if exists (select 1
+   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
+   where r.fkeyid = object_id('SUCURSAL') and o.name = 'FK_SUCURSAL_SUCURSALE_EMPRESA')
+alter table SUCURSAL
+   drop constraint FK_SUCURSAL_SUCURSALE_EMPRESA
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('CAJA')
+            and   type = 'U')
+   drop table CAJA
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('CIUDAD')
+            and   name  = 'CIUDADES_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index CIUDAD.CIUDADES_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('CIUDAD')
+            and   type = 'U')
+   drop table CIUDAD
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('COMUNA')
+            and   name  = 'COMUNAS_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index COMUNA.COMUNAS_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('COMUNA')
+            and   type = 'U')
+   drop table COMUNA
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('DETALLE')
+            and   name  = 'DETALLES_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index DETALLE.DETALLES_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('DETALLE')
+            and   name  = 'PRODUCTOS_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index DETALLE.PRODUCTOS_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('DETALLE')
+            and   type = 'U')
+   drop table DETALLE
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('EMPLEADO')
+            and   name  = 'TIENEN_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index EMPLEADO.TIENEN_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('EMPLEADO')
+            and   name  = 'VIVEN_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index EMPLEADO.VIVEN_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('EMPLEADO')
+            and   name  = 'DESTINATARIOS_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index EMPLEADO.DESTINATARIOS_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('EMPLEADO')
+            and   type = 'U')
+   drop table EMPLEADO
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('EMPRESA')
+            and   type = 'U')
+   drop table EMPRESA
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('FACTURA')
+            and   name  = 'PAGAN_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index FACTURA.PAGAN_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('FACTURA')
+            and   type = 'U')
+   drop table FACTURA
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('MEDIOS_DE_PAGO')
+            and   name  = 'MEDIOS_DE_PAGO2_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index MEDIOS_DE_PAGO.MEDIOS_DE_PAGO2_FK
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('MEDIOS_DE_PAGO')
+            and   name  = 'MEDIOS_DE_PAGO_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index MEDIOS_DE_PAGO.MEDIOS_DE_PAGO_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('MEDIOS_DE_PAGO')
+            and   type = 'U')
+   drop table MEDIOS_DE_PAGO
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('PAGO')
+            and   type = 'U')
+   drop table PAGO
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('REGION')
+            and   type = 'U')
+   drop table REGION
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SINDICATO')
+            and   type = 'U')
+   drop table SINDICATO
+go
+
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('SUCURSAL')
+            and   name  = 'SUCURSALES_FK'
+            and   indid > 0
+            and   indid < 255)
+   drop index SUCURSAL.SUCURSALES_FK
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('SUCURSAL')
+            and   type = 'U')
+   drop table SUCURSAL
+go
+
+/*==============================================================*/
+/* Table: CAJA                                                  */
+/*==============================================================*/
+create table CAJA (
+   IDCAJA               int                  not null,
+   CAJA                 char(10)             null,
+   DESCRIPCION          text                 null,
+   PRECIO               int                  null,
+   constraint PK_CAJA primary key nonclustered (IDCAJA)
+)
+go
+
+/*==============================================================*/
+/* Table: CIUDAD                                                */
+/*==============================================================*/
+create table CIUDAD (
+   IDCIU                int                  not null,
+   IDREG                int                  not null,
+   CIU                  char(250)            null,
+   constraint PK_CIUDAD primary key nonclustered (IDCIU)
+)
+go
+
+/*==============================================================*/
+/* Index: CIUDADES_FK                                           */
+/*==============================================================*/
+create index CIUDADES_FK on CIUDAD (
+IDREG ASC
+)
+go
+
+/*==============================================================*/
+/* Table: COMUNA                                                */
+/*==============================================================*/
+create table COMUNA (
+   IDCOM                int                  not null,
+   IDCIU                int                  not null,
+   COMUNA               char(250)            null,
+   constraint PK_COMUNA primary key nonclustered (IDCOM)
+)
+go
+
+/*==============================================================*/
+/* Index: COMUNAS_FK                                            */
+/*==============================================================*/
+create index COMUNAS_FK on COMUNA (
+IDCIU ASC
+)
+go
+
+/*==============================================================*/
+/* Table: DETALLE                                               */
+/*==============================================================*/
+create table DETALLE (
+   NUM                  int                  not null,
+   IDCAJA               int                  not null,
+   FOLIO                int                  not null,
+   CANT                 int                  null,
+   SUBTOTAL             bigint               null,
+   constraint PK_DETALLE primary key nonclustered (NUM)
+)
+go
+
+/*==============================================================*/
+/* Index: PRODUCTOS_FK                                          */
+/*==============================================================*/
+create index PRODUCTOS_FK on DETALLE (
+IDCAJA ASC
+)
+go
+
+/*==============================================================*/
+/* Index: DETALLES_FK                                           */
+/*==============================================================*/
+create index DETALLES_FK on DETALLE (
+FOLIO ASC
+)
+go
+
+/*==============================================================*/
+/* Table: EMPLEADO                                              */
+/*==============================================================*/
+create table EMPLEADO (
+   RUT                  char(12)             not null,
+   IDSUCU               int                  not null,
+   IDCOM                int                  not null,
+   IDSINDICATO          int                  null,
+   NOM                  char(250)            null,
+   DIR                  char(250)            null,
+   CEL                  bigint               null,
+   MAIL                 char(100)            null,
+   constraint PK_EMPLEADO primary key nonclustered (RUT)
+)
+go
+
+/*==============================================================*/
+/* Index: DESTINATARIOS_FK                                      */
+/*==============================================================*/
+create index DESTINATARIOS_FK on EMPLEADO (
+IDSUCU ASC
+)
+go
+
+/*==============================================================*/
+/* Index: VIVEN_FK                                              */
+/*==============================================================*/
+create index VIVEN_FK on EMPLEADO (
+IDCOM ASC
+)
+go
+
+/*==============================================================*/
+/* Index: TIENEN_FK                                             */
+/*==============================================================*/
+create index TIENEN_FK on EMPLEADO (
+IDSINDICATO ASC
+)
+go
+
+/*==============================================================*/
+/* Table: EMPRESA                                               */
+/*==============================================================*/
+create table EMPRESA (
+   IDEMPR               int                  not null,
+   EMPR                 char(250)            null,
+   ECEL                 bigint               null,
+   EMAIL                char(100)            null,
+   constraint PK_EMPRESA primary key nonclustered (IDEMPR)
+)
+go
+
+/*==============================================================*/
+/* Table: FACTURA                                               */
+/*==============================================================*/
+create table FACTURA (
+   FOLIO                int                  not null,
+   IDSUCU               int                  not null,
+   FECHA                datetime             null,
+   TOTAL                bigint               null,
+   constraint PK_FACTURA primary key nonclustered (FOLIO)
+)
+go
+
+/*==============================================================*/
+/* Index: PAGAN_FK                                              */
+/*==============================================================*/
+create index PAGAN_FK on FACTURA (
+IDSUCU ASC
+)
+go
+
+/*==============================================================*/
+/* Table: MEDIOS_DE_PAGO                                        */
+/*==============================================================*/
+create table MEDIOS_DE_PAGO (
+   FOLIO                int                  not null,
+   IDPAGO               int                  not null,
+   constraint PK_MEDIOS_DE_PAGO primary key (FOLIO, IDPAGO)
+)
+go
+
+/*==============================================================*/
+/* Index: MEDIOS_DE_PAGO_FK                                     */
+/*==============================================================*/
+create index MEDIOS_DE_PAGO_FK on MEDIOS_DE_PAGO (
+FOLIO ASC
+)
+go
+
+/*==============================================================*/
+/* Index: MEDIOS_DE_PAGO2_FK                                    */
+/*==============================================================*/
+create index MEDIOS_DE_PAGO2_FK on MEDIOS_DE_PAGO (
+IDPAGO ASC
+)
+go
+
+/*==============================================================*/
+/* Table: PAGO                                                  */
+/*==============================================================*/
+create table PAGO (
+   IDPAGO               int                  not null,
+   PAGO                 char(50)             null,
+   constraint PK_PAGO primary key nonclustered (IDPAGO)
+)
+go
+
+/*==============================================================*/
+/* Table: REGION                                                */
+/*==============================================================*/
+create table REGION (
+   IDREG                int                  not null,
+   REG                  char(250)            null,
+   constraint PK_REGION primary key nonclustered (IDREG)
+)
+go
+
+/*==============================================================*/
+/* Table: SINDICATO                                             */
+/*==============================================================*/
+create table SINDICATO (
+   IDSINDICATO          int                  not null,
+   SINDICATO            char(250)            null,
+   constraint PK_SINDICATO primary key nonclustered (IDSINDICATO)
+)
+go
+
+/*==============================================================*/
+/* Table: SUCURSAL                                              */
+/*==============================================================*/
+create table SUCURSAL (
+   IDSUCU               int                  not null,
+   IDEMPR               int                  not null,
+   SUCU                 char(100)            null,
+   SDIR                 char(250)            null,
+   SCEL                 bigint               null,
+   SMAIL                char(100)            null,
+   constraint PK_SUCURSAL primary key nonclustered (IDSUCU)
+)
+go
+
+/*==============================================================*/
+/* Index: SUCURSALES_FK                                         */
+/*==============================================================*/
+create index SUCURSALES_FK on SUCURSAL (
+IDEMPR ASC
+)
+go
+
+alter table CIUDAD
+   add constraint FK_CIUDAD_CIUDADES_REGION foreign key (IDREG)
+      references REGION (IDREG)
+go
+
+alter table COMUNA
+   add constraint FK_COMUNA_COMUNAS_CIUDAD foreign key (IDCIU)
+      references CIUDAD (IDCIU)
+go
+
+alter table DETALLE
+   add constraint FK_DETALLE_DETALLES_FACTURA foreign key (FOLIO)
+      references FACTURA (FOLIO)
+go
+
+alter table DETALLE
+   add constraint FK_DETALLE_PRODUCTOS_CAJA foreign key (IDCAJA)
+      references CAJA (IDCAJA)
+go
+
+alter table EMPLEADO
+   add constraint FK_EMPLEADO_DESTINATA_SUCURSAL foreign key (IDSUCU)
+      references SUCURSAL (IDSUCU)
+go
+
+alter table EMPLEADO
+   add constraint FK_EMPLEADO_TIENEN_SINDICAT foreign key (IDSINDICATO)
+      references SINDICATO (IDSINDICATO)
+go
+
+alter table EMPLEADO
+   add constraint FK_EMPLEADO_VIVEN_COMUNA foreign key (IDCOM)
+      references COMUNA (IDCOM)
+go
+
+alter table FACTURA
+   add constraint FK_FACTURA_PAGAN_SUCURSAL foreign key (IDSUCU)
+      references SUCURSAL (IDSUCU)
+go
+
+alter table MEDIOS_DE_PAGO
+   add constraint FK_MEDIOS_D_MEDIOS_DE_FACTURA foreign key (FOLIO)
+      references FACTURA (FOLIO)
+go
+
+alter table MEDIOS_DE_PAGO
+   add constraint FK_MEDIOS_D_MEDIOS_DE_PAGO foreign key (IDPAGO)
+      references PAGO (IDPAGO)
+go
+
+alter table SUCURSAL
+   add constraint FK_SUCURSAL_SUCURSALE_EMPRESA foreign key (IDEMPR)
+      references EMPRESA (IDEMPR)
+go
+
+SP
+/*==============================================================
+PROCEDIMIENTOS DE ALMACENADO:
+mostrar información de empleados
+==============================================================*/
+create procedure info_empleados
+as begin
+select	e.rut as RUT,
+		e.NOM as EMPLEADO,
+		reg.REG as REGION,
+		ciu.CIU as CIUDAD,
+		c.COMUNA as COMUNA,
+		e.DIR as DIRECCION,
+		e.MAIL as CORREO_ELECTRONICO,
+		e.CEL as TELEFONO,
+		em.EMPR as EMPRESA,
+		s.SUCU as SUCURSAL,
+		i.SINDICATO as SINDICATO
+from EMPLEADO e inner join SUCURSAL s on e.IDSUCU = s.IDSUCU
+				inner join COMUNA c on e.IDCOM = c.IDCOM
+				inner join SINDICATO i on e.IDSINDICATO = i.IDSINDICATO
+				inner join EMPRESA em on s.IDEMPR = em.IDEMPR
+				inner join CIUDAD ciu on c.IDCIU = ciu.IDCIU
+				inner join REGION reg on ciu.IDREG = reg.IDREG
+end
+execute info_empleados
+
+create procedure buscarempleados
+@RUT char(12)
+as 
+select	e.rut as RUT,
+		e.NOM as EMPLEADO,
+		reg.REG as REGION,
+		ciu.CIU as CIUDAD,
+		c.COMUNA as COMUNA,
+		e.DIR as DIRECCION,
+		e.MAIL as CORREO_ELECTRONICO,
+		e.CEL as TELEFONO,
+		em.EMPR as EMPRESA,
+		s.SUCU as SUCURSAL,
+		i.SINDICATO as SINDICATO
+from EMPLEADO e inner join SUCURSAL s on e.IDSUCU = s.IDSUCU
+				inner join COMUNA c on e.IDCOM = c.IDCOM
+				inner join SINDICATO i on e.IDSINDICATO = i.IDSINDICATO
+				inner join EMPRESA em on s.IDEMPR = em.IDEMPR
+				inner join CIUDAD ciu on c.IDCIU = ciu.IDCIU
+				inner join REGION reg on ciu.IDREG = reg.IDREG
+where @RUT = e.RUT;
+execute buscarempleados 'xx.xxx.xxx-x'
+
+
+
+/*==============================================================
+PROCEDIMIENTOS DE ALMACENADO:
+mostrar información de empresa, sucursal, factura
+==============================================================*/
+create procedure historial
+as begin
+select  em.EMPR as EMPRESA,
+		s.SUCU as SUCURSAL,
+		f.FOLIO as FOLIO,
+		f.FECHA as FECHA_EMISION,
+		(select (sum (d.SUBTOTAL))) as TOTAL
+from SUCURSAL s, EMPRESA em, FACTURA f, DETALLE d
+where	em.IDEMPR = s.IDEMPR and
+		s.IDSUCU = f.IDSUCU and
+		f.FOLIO = d.FOLIO
+group by em.EMPR, s.SUCU, f.FOLIO, f.FECHA
+end
+execute historial
+
+create procedure busquedafactura
+@FOLIO int
+as
+select  em.EMPR as EMPRESA,
+		s.SUCU as SUCURSAL,
+		f.FOLIO as FOLIO,
+		f.FECHA as FECHA_EMISION,
+		(select (sum (d.SUBTOTAL))) as TOTAL
+from SUCURSAL s, EMPRESA em, FACTURA f, DETALLE d
+where	em.IDEMPR = s.IDEMPR and
+		s.IDSUCU = f.IDSUCU and
+		f.FOLIO = d.FOLIO and
+		@FOLIO = f.FOLIO
+group by em.EMPR, s.SUCU, f.FOLIO, f.FECHA;
+execute busquedafactura 12345
+
+
+
+/*==============================================================
+PROCEDIMIENTOS DE ALMACENADO:
+mostrar información de factura
+==============================================================*/
+create procedure factura_info
+as begin
+select  em.EMPR as EMPRESA,
+		s.SUCU as SUCURSAL,
+		f.FOLIO as FOLIO,
+		f.FECHA as FECHA_EMISION,
+		c.CAJA as CAJA_NAVIDEÑA,
+		c.PRECIO as PRECIO_UNITARIO,
+		d.CANT as CANTIDAD,
+		(select (d.CANT*c.PRECIO)) as SUBTOTAL,
+		(select (sum (d.SUBTOTAL))) as TOTAL,
+		p.PAGO as MEDIO_DE_PAGO
+from SUCURSAL s, EMPRESA em, FACTURA f, DETALLE d, PAGO p, MEDIOS_DE_PAGO mp, CAJA c, SINDICATO i
+where	em.IDEMPR = s.IDEMPR and
+		s.IDSUCU = f.IDSUCU and
+		f.FOLIO = d.FOLIO and
+		f.FOLIO = mp.FOLIO and 
+		mp.IDPAGO = p.IDPAGO and
+		d.IDCAJA = c.IDCAJA
+group by em.EMPR, s.SUCU, f.FOLIO, f.FECHA, c.CAJA, c.PRECIO, d.CANT, p.PAGO
+end
+execute factura_info
+
+create procedure facturasporempresas
+@EMPRESA int,
+@SUCURSAL int,
+@FECHA date
+as 
+select  em.EMPR as EMPRESA,
+		s.SUCU as SUCURSAL,
+		f.FOLIO as FOLIO,
+		f.FECHA as FECHA_EMISION,
+		c.CAJA as CAJA_NAVIDEÑA,
+		c.PRECIO as PRECIO_UNITARIO,
+		d.CANT as CANTIDAD,
+		(select (d.CANT*c.PRECIO)) as SUBTOTAL,
+		(select (sum (d.SUBTOTAL))) as TOTAL,
+		p.PAGO as MEDIO_DE_PAGO
+from SUCURSAL s, EMPRESA em, FACTURA f, DETALLE d, PAGO p, MEDIOS_DE_PAGO mp, CAJA c, SINDICATO i
+where	em.IDEMPR = s.IDEMPR and
+		s.IDSUCU = f.IDSUCU and
+		f.FOLIO = d.FOLIO and
+		f.FOLIO = mp.FOLIO and 
+		mp.IDPAGO = p.IDPAGO and
+		d.IDCAJA = c.IDCAJA and
+		@EMPRESA = em.IDEMPR and
+		@SUCURSAL = s.IDSUCU and
+		@FECHA = f.FECHA
+group by em.EMPR, s.SUCU, f.FOLIO, f.FECHA, c.CAJA, c.PRECIO, d.CANT, p.PAGO
+execute facturasporempresas 1, 1, '10/10/1010'
